@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wizard SYSTEM "Wizard.dtd">
+
+<wizard>
+	<plugin type="dialogos.plugin.sphinx">
+		<att name="language" type="string" value="de_DE"/>
+	</plugin>
+	<plugin type="dialogos.plugin.tts">
+	</plugin>
+	<graph directed="1" Graphic="1" Layout="points">
+		<att name="width" type="integer" value="765"/>
+		<att name="height" type="integer" value="542"/>
+		<groovyFunctions></groovyFunctions>
+		<node uid="0767d71d-ed07-4a22-82a3-c64846865fe5" class="com.clt.diamant.graph.nodes.GraphNode">
+			<graphics x="365" y="293" fill="#ffc800"/>
+			<att name="title" type="string" value="Guidance"/>
+			<att name="graph" type="object">
+				<graph directed="1" Graphic="1" Layout="points">
+					<att name="width" type="integer" value="765"/>
+					<att name="height" type="integer" value="542"/>
+					<groovyFunctions></groovyFunctions>
+					<variable uid="d9046751-239e-4dcd-bab3-58710d207133">
+						<name>whatToSay</name>
+						<type>list</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="b575951e-9e81-4149-bc17-68d07985af1d">
+						<name>arrivalTime</name>
+						<type>int</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="05a77f9e-ff3d-4ff5-a5dd-e63d0bf3c06d">
+						<name>talkIndex</name>
+						<type>int</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="397019f7-d4f3-468b-bdd6-15ca527714ca">
+						<name>guidanceDuration</name>
+						<type>int</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="83484014-345c-44c8-91a8-7279d45fb5da">
+						<name>talkDurations</name>
+						<type>list</type>
+						<value>undefined</value>
+					</variable>
+					<node uid="039c88cb-180f-4b77-861c-7c97f80138f8" class="com.clt.diamant.graph.nodes.SetVariableNode">
+						<graphics x="345" y="266" fill="#c0c0c0"/>
+						<att name="title" type="string" value="sayNext"/>
+						<att name="assignments" type="list">
+							<att name="1" type="list">
+								<att name="var_uid" type="string" value="05a77f9e-ff3d-4ff5-a5dd-e63d0bf3c06d"/>
+								<att name="var_value" type="string" value="talkIndex + 1"/>
+							</att>
+						</att>
+						<att name="simultaneous" type="boolean" value="0"/>
+					</node>
+					<node uid="24563a8a-b369-4425-9591-e581d6deee5f" class="com.clt.diamant.graph.nodes.StartNode">
+						<graphics x="380" y="13" fill="#9999ff"/>
+						<att name="title" type="string" value="Start"/>
+					</node>
+					<node uid="31dcc9d1-8d6d-42c2-9532-24e07564fc99" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+						<graphics x="188" y="244" fill="#00b200"/>
+						<att name="title" type="string" value="Rest"/>
+						<att name="voice" type="string" value="cmu-slt-hsmm"/>
+						<att name="prompt" type="text">
+							<value>Okay, let's take a break. Let me know when you want to continue.</value>
+						</att>
+						<att name="prompt_type" type="string" value="text"/>
+						<att name="wait" type="boolean" value="1"/>
+						<att name="await_silence" type="boolean" value="0"/>
+					</node>
+					<node uid="689c1ec1-04e3-4db6-8066-19b510292f82" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+						<graphics x="368" y="130" fill="#00b200"/>
+						<att name="title" type="string" value="Smalltalk"/>
+						<att name="voice" type="string" value="cmu-slt-hsmm"/>
+						<att name="prompt" type="text">
+							<value>get(whatToSay, talkIndex)</value>
+						</att>
+						<att name="prompt_type" type="string" value="expression"/>
+						<att name="wait" type="boolean" value="0"/>
+						<att name="await_silence" type="boolean" value="0"/>
+					</node>
+					<node uid="a3d139a7-91f5-453d-a931-96de1f804c03" class="com.clt.diamant.graph.nodes.ReturnNode">
+						<graphics x="349" y="491" fill="#9999ff"/>
+						<att name="title" type="string" value="Return"/>
+					</node>
+					<node uid="ab028608-0f31-422b-93ca-a28c7b861460" class="com.clt.diamant.graph.nodes.ScriptNode">
+						<graphics x="379" y="70" fill="#99ffff"/>
+						<att name="title" type="string" value="Script"/>
+						<att name="script" type="text">
+							<value>guidanceDuration = 20000; // this could be randomized, but let's fix it for now.
+
+// this should be filled with stuff to say while we're guiding the user;
+// this can be a sequence of things, we're not reordering this randomly.
+whatToSay = [&quot;I hope I don’t walk too fast,&quot;, &quot;but it looks like you are doing just fine today.&quot;, &quot;Actually, I heard that there's something very delicious for lunch,&quot;, &quot;namely spaghetti bolognese.&quot;, &quot;I have heard there are baby lions at the Copenhagen Zoo.&quot;, &quot;I think they are really sweet.&quot;];
+talkDurations = [2, 3, 3, 1, 2, 1.5];
+talkIndex = 0; // we'll use this to iterate through what we want to say
+
+arrivalTime = currentTimeMillis() + guidanceDuration;
+
+// remove the stuff below if you externally pre-compute (or guess) expected durations to say something
+talkDurations = [];
+for (int i=length(whatToSay)-1; i &gt;= 0 ; i--) {
+  talkDurations = cons(tts_expectedDurationToSay(get(whatToSay, i)), talkDurations);
+}</value>
+						</att>
+					</node>
+					<node uid="c8e9a70e-60ac-472f-845c-4771bad68b9a" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+						<graphics x="277" y="393" fill="#00b200"/>
+						<att name="title" type="string" value="Sprachsynthese"/>
+						<att name="voice" type="string" value="cmu-slt-hsmm"/>
+						<att name="prompt" type="text">
+							<value>Now, what were we talking about? Right:</value>
+						</att>
+						<att name="prompt_type" type="string" value="text"/>
+						<att name="wait" type="boolean" value="1"/>
+						<att name="await_silence" type="boolean" value="0"/>
+					</node>
+					<node uid="cde2fe8b-c921-48fd-98a4-c0ef4ab9f6ae" class="com.clt.diamant.graph.nodes.ConditionalNode">
+						<graphics x="182" y="384" fill="#c0c0c0"/>
+						<att name="title" type="string" value="arrival?"/>
+						<att name="expression" type="string" value="currentTimeMillis() &gt; arrivalTime"/>
+					</node>
+					<node uid="d1404c92-ba72-45b5-812c-8736bc283743" class="edu.cmu.lti.dialogos.sphinx.plugin.SphinxNode">
+						<graphics x="290" y="198" fill="#b20000"/>
+						<att name="title" type="string" value="Spracherkenner"/>
+						<att name="timeout" type="string" value="int(get(talkDurations, talkIndex) * 1000)"/>
+						<att name="language" type="string" value="US English"/>
+					</node>
+					<node uid="e5fc2dc1-6a72-4853-9952-c3bb813f4a6e" class="edu.cmu.lti.dialogos.sphinx.plugin.SphinxNode">
+						<graphics x="165" y="317" fill="#b20000"/>
+						<att name="title" type="string" value="Spracherkenner"/>
+						<att name="language" type="string" value="US English"/>
+					</node>
+					<edge src="039c88cb-180f-4b77-861c-7c97f80138f8" tgt="689c1ec1-04e3-4db6-8066-19b510292f82">
+					</edge>
+					<edge src="24563a8a-b369-4425-9591-e581d6deee5f" tgt="ab028608-0f31-422b-93ca-a28c7b861460">
+					</edge>
+					<edge src="31dcc9d1-8d6d-42c2-9532-24e07564fc99" tgt="e5fc2dc1-6a72-4853-9952-c3bb813f4a6e">
+					</edge>
+					<edge src="689c1ec1-04e3-4db6-8066-19b510292f82" tgt="d1404c92-ba72-45b5-812c-8736bc283743">
+					</edge>
+					<edge src="ab028608-0f31-422b-93ca-a28c7b861460" tgt="689c1ec1-04e3-4db6-8066-19b510292f82">
+					</edge>
+					<edge src="c8e9a70e-60ac-472f-845c-4771bad68b9a" tgt="689c1ec1-04e3-4db6-8066-19b510292f82">
+					</edge>
+					<edge src="cde2fe8b-c921-48fd-98a4-c0ef4ab9f6ae" tgt="a3d139a7-91f5-453d-a931-96de1f804c03">
+						<att name="condition" type="string" value="currentTimeMillis() &gt; arrivalTime"/>
+					</edge>
+					<edge src="cde2fe8b-c921-48fd-98a4-c0ef4ab9f6ae" tgt="c8e9a70e-60ac-472f-845c-4771bad68b9a">
+						<att name="condition" type="string" value="else"/>
+					</edge>
+					<edge src="d1404c92-ba72-45b5-812c-8736bc283743" tgt="31dcc9d1-8d6d-42c2-9532-24e07564fc99">
+						<att name="condition" type="string" value="(robot) (please) wait | stop"/>
+					</edge>
+					<edge type="timeout" src="d1404c92-ba72-45b5-812c-8736bc283743" tgt="039c88cb-180f-4b77-861c-7c97f80138f8">
+						<att name="condition" type="string" value="Zeitüberschreitung nach int(get(talkDurations, talkIndex) * 1000)ms"/>
+						<att name="timeout" type="string" value="int(get(talkDurations, talkIndex) * 1000)"/>
+					</edge>
+					<edge src="e5fc2dc1-6a72-4853-9952-c3bb813f4a6e" tgt="cde2fe8b-c921-48fd-98a4-c0ef4ab9f6ae">
+						<att name="condition" type="string" value="okay | let's continue | I'm ready"/>
+					</edge>
+				</graph>
+			</att>
+			<att name="endpoints" type="list">
+				<att name="0" type="string" value="a3d139a7-91f5-453d-a931-96de1f804c03"/>
+			</att>
+		</node>
+		<node uid="20d54672-9f0a-497f-b459-2c897eb974fa" class="com.clt.diamant.graph.nodes.EndNode">
+			<graphics x="388" y="458" fill="#9999ff"/>
+			<att name="title" type="string" value="Ende"/>
+		</node>
+		<node uid="47c8e62f-0c39-4c4d-9744-dad8b240b925" class="edu.cmu.lti.dialogos.sphinx.plugin.SphinxNode">
+			<graphics x="392" y="90" fill="#b20000"/>
+			<att name="title" type="string" value="wakeup word"/>
+			<att name="language" type="string" value="US English"/>
+		</node>
+		<node uid="78e7731c-bb8d-4c9f-8f62-6d9c0a367460" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="366" y="368" fill="#00b200"/>
+			<att name="title" type="string" value="Arrival"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>We have arrived. Have a good lunch!</value>
+			</att>
+			<att name="prompt_type" type="string" value="text"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="7f1a6152-4d7f-4451-aabe-db5a7e357aeb" class="com.clt.diamant.graph.nodes.StartNode">
+			<graphics x="395" y="4" fill="#9999ff"/>
+			<att name="title" type="string" value="Start"/>
+		</node>
+		<node uid="b4c51d62-b38f-4428-9339-4bc7c5cc09ad" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="368" y="229" fill="#00b200"/>
+			<att name="title" type="string" value="Let's go!"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&lt;maryxml xmlns=&quot;http://mary.dfki.de/2002/MaryXML&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; version=&quot;0.4&quot; xml:lang=&quot;en_US&quot;&gt;&lt;prosody pitch=&quot;+0%&quot; range=&quot;-10%&quot; rate=&quot;100%&quot; volume=&quot;loud&quot;&gt;okay, let's go.&lt;/prosody&gt;&lt;/maryxml&gt;</value>
+			</att>
+			<att name="prompt_type" type="string" value="maryxml"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="bc52d001-d375-4b21-b6ec-88e595eeb5de" class="com.clt.diamant.graph.nodes.GraphNode">
+			<graphics x="397" y="155" fill="#ffc800"/>
+			<att name="title" type="string" value="Approach"/>
+			<att name="graph" type="object">
+				<graph directed="1" Graphic="1" Layout="points">
+					<att name="width" type="integer" value="765"/>
+					<att name="height" type="integer" value="542"/>
+					<groovyFunctions></groovyFunctions>
+					<variable uid="7bf05b00-8270-4d00-84d7-cc0fe24b9412">
+						<name>whatToSay</name>
+						<type>list</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="e3b932f2-d705-4fdc-a6f9-453e9be1161f">
+						<name>approachDuration</name>
+						<type>int</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="16e03c92-f910-44c8-ab1f-e5322ad95cb3">
+						<name>approachStart</name>
+						<type>int</type>
+						<value>undefined</value>
+					</variable>
+					<variable uid="0470082d-5cde-4011-b72c-a96f11b94e5b">
+						<name>approachDone</name>
+						<type>int</type>
+						<value>undefined</value>
+					</variable>
+					<node uid="62130b7e-4e94-4f78-b2c6-1040d57ffa2f" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+						<graphics x="355" y="168" fill="#00b200"/>
+						<att name="title" type="string" value="Sprachsynthese"/>
+						<att name="voice" type="string" value="cmu-slt-hsmm"/>
+						<att name="prompt" type="text">
+							<value>get(whatToSay, random(0, length(whatToSay)-1))</value>
+						</att>
+						<att name="prompt_type" type="string" value="expression"/>
+						<att name="wait" type="boolean" value="1"/>
+						<att name="await_silence" type="boolean" value="0"/>
+					</node>
+					<node uid="96181935-d0c0-4213-bb04-d86c92e00973" class="com.clt.diamant.graph.nodes.ScriptNode">
+						<graphics x="373" y="104" fill="#99ffff"/>
+						<att name="title" type="string" value="Script"/>
+						<att name="script" type="text">
+							<value>whatToSay = [&quot;I'm coming.&quot;, &quot;I'm on my way.&quot;, &quot;I'm there in a second.&quot;, &quot;I'll be with you shortly.&quot;, &quot;Let me roll towards you.&quot;, &quot;It's just a matter of time.&quot;, &quot;One small step for man, one giant leap for a robot.&quot;];
+
+// set below to a good value for the experiment instead of a random value, so that you have better control over the experiment.
+approachDuration = random(3000, 7000);
+approachDone = currentTimeMillis() + approachDuration;</value>
+						</att>
+					</node>
+					<node uid="aa0d8294-5a3a-46b8-8c22-33fa1174eb53" class="com.clt.diamant.graph.nodes.ConditionalNode">
+						<graphics x="361" y="272" fill="#c0c0c0"/>
+						<att name="title" type="string" value="arrived?"/>
+						<att name="expression" type="string" value="currentTimeMillis() &gt; approachDone"/>
+					</node>
+					<node uid="c0a6d3ba-1a22-403c-ab76-ed92f4fabd0b" class="com.clt.diamant.graph.nodes.ConditionalNode">
+						<graphics x="470" y="227" fill="#c0c0c0"/>
+						<att name="title" type="string" value="arrived?"/>
+						<att name="expression" type="string" value="currentTimeMillis() &gt; approachDone"/>
+					</node>
+					<node uid="c78e2cdc-1570-4d5c-ac47-5bca10b9d0a2" class="com.clt.diamant.graph.nodes.StartNode">
+						<graphics x="370" y="40" fill="#9999ff"/>
+						<att name="title" type="string" value="Start"/>
+					</node>
+					<node uid="e2c84721-766a-4883-8b4a-b82b0f07ef9e" class="com.clt.diamant.graph.nodes.ReturnNode">
+						<graphics x="385" y="397" fill="#9999ff"/>
+						<att name="title" type="string" value="Return"/>
+					</node>
+					<node uid="fd346e29-dbf3-43b6-98de-5d98c4478fed" class="com.clt.diamant.graph.nodes.SleepNode">
+						<graphics x="486" y="294" fill="#99ffff"/>
+						<att name="title" type="string" value="sleep"/>
+						<att name="time" type="string" value="300"/>
+					</node>
+					<edge src="62130b7e-4e94-4f78-b2c6-1040d57ffa2f" tgt="aa0d8294-5a3a-46b8-8c22-33fa1174eb53">
+					</edge>
+					<edge src="96181935-d0c0-4213-bb04-d86c92e00973" tgt="62130b7e-4e94-4f78-b2c6-1040d57ffa2f">
+					</edge>
+					<edge src="aa0d8294-5a3a-46b8-8c22-33fa1174eb53" tgt="e2c84721-766a-4883-8b4a-b82b0f07ef9e">
+						<att name="condition" type="string" value="currentTimeMillis() &gt; approachDone"/>
+					</edge>
+					<edge src="aa0d8294-5a3a-46b8-8c22-33fa1174eb53" tgt="fd346e29-dbf3-43b6-98de-5d98c4478fed">
+						<att name="condition" type="string" value="else"/>
+					</edge>
+					<edge src="c0a6d3ba-1a22-403c-ab76-ed92f4fabd0b" tgt="e2c84721-766a-4883-8b4a-b82b0f07ef9e">
+						<att name="condition" type="string" value="currentTimeMillis() &gt; approachDone"/>
+					</edge>
+					<edge src="c0a6d3ba-1a22-403c-ab76-ed92f4fabd0b" tgt="62130b7e-4e94-4f78-b2c6-1040d57ffa2f">
+						<att name="condition" type="string" value="else"/>
+					</edge>
+					<edge src="c78e2cdc-1570-4d5c-ac47-5bca10b9d0a2" tgt="96181935-d0c0-4213-bb04-d86c92e00973">
+					</edge>
+					<edge src="fd346e29-dbf3-43b6-98de-5d98c4478fed" tgt="c0a6d3ba-1a22-403c-ab76-ed92f4fabd0b">
+					</edge>
+				</graph>
+			</att>
+			<att name="endpoints" type="list">
+				<att name="0" type="string" value="e2c84721-766a-4883-8b4a-b82b0f07ef9e"/>
+			</att>
+		</node>
+		<edge src="0767d71d-ed07-4a22-82a3-c64846865fe5" tgt="78e7731c-bb8d-4c9f-8f62-6d9c0a367460">
+			<att name="condition" type="string" value="Return"/>
+		</edge>
+		<edge src="47c8e62f-0c39-4c4d-9744-dad8b240b925" tgt="bc52d001-d375-4b21-b6ec-88e595eeb5de">
+			<att name="condition" type="string" value="Robot please come |  Please guide me to the dining area"/>
+		</edge>
+		<edge src="78e7731c-bb8d-4c9f-8f62-6d9c0a367460" tgt="20d54672-9f0a-497f-b459-2c897eb974fa">
+		</edge>
+		<edge src="7f1a6152-4d7f-4451-aabe-db5a7e357aeb" tgt="47c8e62f-0c39-4c4d-9744-dad8b240b925">
+		</edge>
+		<edge src="b4c51d62-b38f-4428-9339-4bc7c5cc09ad" tgt="0767d71d-ed07-4a22-82a3-c64846865fe5">
+		</edge>
+		<edge src="bc52d001-d375-4b21-b6ec-88e595eeb5de" tgt="b4c51d62-b38f-4428-9339-4bc7c5cc09ad">
+			<att name="condition" type="string" value="Return"/>
+		</edge>
+	</graph>
+</wizard>

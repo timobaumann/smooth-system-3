@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wizard SYSTEM "Wizard.dtd">
+
+<wizard>
+	<plugin type="dialogos.plugin.sphinx">
+		<att name="language" type="string" value="de_DE"/>
+	</plugin>
+	<plugin type="dialogos.plugin.tts">
+	</plugin>
+	<graph directed="1" Graphic="1" Layout="points">
+		<att name="width" type="integer" value="904"/>
+		<att name="height" type="integer" value="930"/>
+		<groovyFunctions></groovyFunctions>
+		<variable uid="f323b17b-85b6-4b97-8ab3-91fe965e4358">
+			<name>robot_status</name>
+			<type>list</type>
+			<value>undefined</value>
+		</variable>
+		<variable uid="a60daec1-8570-425e-85bf-b8c7baf0aa15">
+			<name>tempo_prompt</name>
+			<type>string</type>
+			<value>undefined</value>
+		</variable>
+		<variable uid="3fd8d59b-0a93-46ed-a0e8-d944e2652987">
+			<name>news</name>
+			<type>list</type>
+			<value>undefined</value>
+			<export/>
+		</variable>
+		<variable uid="f5f84e50-d5f3-43d9-95e2-613e5d7ac745">
+			<name>news_counter</name>
+			<type>int</type>
+			<value>0</value>
+			<export/>
+		</variable>
+		<node uid="1262cb31-9188-454b-9de2-7c88fbe748d2" class="com.clt.diamant.graph.nodes.ScriptNode">
+			<graphics x="704" y="764" fill="#99ffff"/>
+			<att name="title" type="string" value=" await arrival"/>
+			<att name="script" type="text">
+				<value>delay(100);</value>
+			</att>
+		</node>
+		<node uid="2167b4f9-80a2-4c2d-b707-bd87fd83300f" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="452" y="459" fill="#00b200"/>
+			<att name="title" type="string" value="Sprachsynthese"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>Okay, the news.</value>
+			</att>
+			<att name="prompt_type" type="string" value="text"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="335fd3d3-9c28-406a-b937-07bf80e857c9" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="512" y="322" fill="#00b200"/>
+			<att name="title" type="string" value="Sprachsynthese"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>Do you mind if I tell you about the news at the zoo?</value>
+			</att>
+			<att name="prompt_type" type="string" value="text"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="3ba49ba3-af38-4a0a-8276-c780ccfbe979" class="com.clt.diamant.graph.nodes.SleepNode">
+			<graphics x="719" y="576" fill="#99ffff"/>
+			<att name="title" type="string" value="Warten"/>
+			<att name="time" type="string" value="10000"/>
+		</node>
+		<node uid="40c5d14b-22e9-426d-af70-8b7d0f2add66" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="612" y="465" fill="#00b200"/>
+			<att name="title" type="string" value="Sprachsynthese"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>Okay, ai'll stay quiet then.</value>
+			</att>
+			<att name="prompt_type" type="string" value="text"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="5a03b1b8-3f17-4645-95ef-aa673ae88508" class="com.clt.diamant.graph.nodes.ConditionalNode">
+			<graphics x="466" y="523" fill="#c0c0c0"/>
+			<att name="title" type="string" value="headlines done?"/>
+			<att name="expression" type="string" value="news_counter &gt;= length(news)"/>
+		</node>
+		<node uid="6b676d56-290e-46bf-a723-1f4628e5f4f2" class="com.clt.diamant.graph.nodes.ConditionalNode">
+			<graphics x="380" y="757" fill="#c0c0c0"/>
+			<att name="title" type="string" value="news done?"/>
+			<att name="expression" type="string" value="news_counter &gt;= length(news)"/>
+		</node>
+		<node uid="763b8038-7886-4d03-a49f-01a5de0cf6b5" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="511" y="581" fill="#00b200"/>
+			<att name="title" type="string" value="read headline"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>get(get(news, news_counter), &quot;headline&quot;)</value>
+			</att>
+			<att name="prompt_type" type="string" value="expression"/>
+			<att name="wait" type="boolean" value="0"/>
+			<att name="await_silence" type="boolean" value="1"/>
+		</node>
+		<node uid="899a16c8-3c82-4dd6-a8c8-2eeb0aabcc01" class="edu.cmu.lti.dialogos.sphinx.plugin.SphinxNode">
+			<graphics x="515" y="644" fill="#b20000"/>
+			<att name="title" type="string" value="tell me more"/>
+			<att name="timeout" type="string" value="int(1000 * tts_expectedDurationToSay(get(get(news, news_counter), &quot;headline&quot;)))+800"/>
+			<att name="threshold" type="integer" value="80"/>
+			<att name="language" type="string" value="US English"/>
+		</node>
+		<node uid="8f1d1813-0e39-4dd8-9bd6-c1a04a7033b0" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="392" y="641" fill="#00b200"/>
+			<att name="title" type="string" value="read news"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>&quot;about the &quot; + get(get(news, news_counter), &quot;animal&quot;) + &quot;: &quot; + get(get(news, news_counter), &quot;headline&quot;) + get(get(news, news_counter), &quot;story&quot;)</value>
+			</att>
+			<att name="prompt_type" type="string" value="expression"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="9531497c-75ba-4b21-906e-5f8b558b38c8" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="495" y="714" fill="#00b200"/>
+			<att name="title" type="string" value="read news"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>&quot;okay, about the &quot; + get(get(news, news_counter), &quot;animal&quot;) + &quot;: &quot; + get(get(news, news_counter), &quot;headline&quot;) + get(get(news, news_counter), &quot;story&quot;)</value>
+			</att>
+			<att name="prompt_type" type="string" value="expression"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="9fbe17f4-fdd8-4b50-8e2d-12bdb830984b" class="edu.cmu.lti.dialogos.sphinx.plugin.SphinxNode">
+			<graphics x="513" y="379" fill="#b20000"/>
+			<att name="title" type="string" value="Spracherkenner"/>
+			<att name="timeout" type="string" value="1500"/>
+			<att name="language" type="string" value="US English"/>
+		</node>
+		<node uid="a0863527-7666-4534-a1a9-d1efb0d1ea2f" class="com.clt.diamant.graph.nodes.SetVariableNode">
+			<graphics x="555" y="777" fill="#c0c0c0"/>
+			<att name="title" type="string" value="counter++"/>
+			<att name="assignments" type="list">
+				<att name="1" type="list">
+					<att name="var_uid" type="string" value="f5f84e50-d5f3-43d9-95e2-613e5d7ac745"/>
+					<att name="var_value" type="string" value="news_counter + 1"/>
+				</att>
+			</att>
+			<att name="simultaneous" type="boolean" value="0"/>
+		</node>
+		<node uid="a342e478-269b-4842-9312-c7e4a1e6333c" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="407" y="833" fill="#00b200"/>
+			<att name="title" type="string" value="inform done"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>This is all the news. Let's continue walking.</value>
+			</att>
+			<att name="prompt_type" type="string" value="text"/>
+			<att name="wait" type="boolean" value="0"/>
+			<att name="await_silence" type="boolean" value="1"/>
+		</node>
+		<node uid="a7472631-ac51-4d1a-ae15-bf6c51865130" class="com.clt.diamant.graph.nodes.EndNode">
+			<graphics x="604" y="860" fill="#9999ff"/>
+			<att name="title" type="string" value="End"/>
+		</node>
+		<node uid="a79487e5-e924-4963-ba76-427c725d0cb9" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="697" y="824" fill="#00b200"/>
+			<att name="title" type="string" value="inform arrived"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>We're in the cafeteria.</value>
+			</att>
+			<att name="prompt_type" type="string" value="text"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<node uid="a7e3e3a3-cfbe-49b3-af8c-64c14e2c1278" class="com.clt.diamant.graph.nodes.StartNode">
+			<graphics x="528" y="94" fill="#9999ff"/>
+			<att name="title" type="string" value="Start"/>
+		</node>
+		<node uid="a9a41793-988d-494f-ac5f-a259bb7dfbc7" class="com.clt.diamant.graph.nodes.SetVariableNode">
+			<graphics x="383" y="700" fill="#c0c0c0"/>
+			<att name="title" type="string" value="counter++"/>
+			<att name="assignments" type="list">
+				<att name="1" type="list">
+					<att name="var_uid" type="string" value="f5f84e50-d5f3-43d9-95e2-613e5d7ac745"/>
+					<att name="var_value" type="string" value="news_counter + 1"/>
+				</att>
+			</att>
+			<att name="simultaneous" type="boolean" value="0"/>
+		</node>
+		<node uid="c2289f4e-9890-45c4-b284-16019a32e378" class="edu.cmu.lti.dialogos.sphinx.plugin.SphinxNode">
+			<graphics x="522" y="208" fill="#b20000"/>
+			<att name="title" type="string" value="wakeup word"/>
+			<att name="threshold" type="integer" value="50"/>
+			<att name="language" type="string" value="US English"/>
+		</node>
+		<node uid="d3443f47-5663-4ccc-af0c-c3ef8807a4f6" class="com.clt.diamant.graph.nodes.ScriptNode">
+			<graphics x="500" y="150" fill="#99ffff"/>
+			<att name="title" type="string" value=" initialize variables "/>
+			<att name="script" type="text">
+				<value>news = [{
+  // animal is a short form that ideally can be spoken in the context &quot;Okay, about the XXXX&quot;
+  animal = &quot;giraffe&quot;, 
+  // this is the news headline
+  headline = &quot;Maybe due to the weather, the giraffe has caught a cold. &quot;, 
+  // the actual story. this is read upon request, or when there's still a lot of time.
+  story = &quot;The giraffe is coughing a lot and her throat itches. The zookeeper has started knitting a scarf for the giraffe to cover her throat. It's already three meters long but still too short.&quot;
+ }, {
+  animal = &quot;penguins&quot;, 
+  headline = &quot;The penguins seem to like the weather a lot. &quot;,
+  story = &quot;One of the penguins was quacking for a long time, when it snowed yesterday. Quacking in the snow almost like singing in the rain. Because they like the cold, some guests have offered ice cubes to the penguins. That's okay, but don't try this with the polar bear!&quot;
+ }, { // extend below
+  animal = &quot;some other animal&quot;,
+  headline = &quot;Some other headline about some other animal. &quot;, 
+  story = &quot;Some other news story about animals at the zoo. News stories tend to be much longer than the corresponding headline. Hence this additional text.&quot;
+ }];</value>
+			</att>
+		</node>
+		<node uid="d492bd79-abf1-44d6-9130-a1372b402988" class="com.clt.diamant.graph.nodes.SetVariableNode">
+			<graphics x="379" y="583" fill="#c0c0c0"/>
+			<att name="title" type="string" value="reset counter"/>
+			<att name="assignments" type="list">
+				<att name="1" type="list">
+					<att name="var_uid" type="string" value="f5f84e50-d5f3-43d9-95e2-613e5d7ac745"/>
+					<att name="var_value" type="string" value="0"/>
+				</att>
+			</att>
+			<att name="simultaneous" type="boolean" value="0"/>
+		</node>
+		<node uid="d7f4cf04-12d4-4e5e-a6a2-10cc4641c4d9" class="de.saar.coli.dialogos.marytts.plugin.TTSNode">
+			<graphics x="521" y="263" fill="#00b200"/>
+			<att name="title" type="string" value="inform start"/>
+			<att name="voice" type="string" value="cmu-slt-hsmm"/>
+			<att name="prompt" type="text">
+				<value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&lt;maryxml xmlns=&quot;http://mary.dfki.de/2002/MaryXML&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; version=&quot;0.4&quot; xml:lang=&quot;en_US&quot;&gt;&lt;prosody pitch=&quot;+0%&quot; range=&quot;-10%&quot; rate=&quot;100%&quot; volume=&quot;loud&quot;&gt;okay, let's go.&lt;/prosody&gt;&lt;/maryxml&gt;</value>
+			</att>
+			<att name="prompt_type" type="string" value="maryxml"/>
+			<att name="wait" type="boolean" value="1"/>
+			<att name="await_silence" type="boolean" value="0"/>
+		</node>
+		<edge src="1262cb31-9188-454b-9de2-7c88fbe748d2" tgt="a79487e5-e924-4963-ba76-427c725d0cb9">
+		</edge>
+		<edge src="2167b4f9-80a2-4c2d-b707-bd87fd83300f" tgt="5a03b1b8-3f17-4645-95ef-aa673ae88508">
+		</edge>
+		<edge src="335fd3d3-9c28-406a-b937-07bf80e857c9" tgt="9fbe17f4-fdd8-4b50-8e2d-12bdb830984b">
+		</edge>
+		<edge src="3ba49ba3-af38-4a0a-8276-c780ccfbe979" tgt="1262cb31-9188-454b-9de2-7c88fbe748d2">
+		</edge>
+		<edge src="40c5d14b-22e9-426d-af70-8b7d0f2add66" tgt="3ba49ba3-af38-4a0a-8276-c780ccfbe979">
+		</edge>
+		<edge src="5a03b1b8-3f17-4645-95ef-aa673ae88508" tgt="d492bd79-abf1-44d6-9130-a1372b402988">
+			<att name="condition" type="string" value="news_counter &gt;= length(news)"/>
+		</edge>
+		<edge src="5a03b1b8-3f17-4645-95ef-aa673ae88508" tgt="763b8038-7886-4d03-a49f-01a5de0cf6b5">
+			<att name="condition" type="string" value="else"/>
+		</edge>
+		<edge src="6b676d56-290e-46bf-a723-1f4628e5f4f2" tgt="a342e478-269b-4842-9312-c7e4a1e6333c">
+			<att name="condition" type="string" value="news_counter &gt;= length(news)"/>
+		</edge>
+		<edge src="6b676d56-290e-46bf-a723-1f4628e5f4f2" tgt="8f1d1813-0e39-4dd8-9bd6-c1a04a7033b0">
+			<att name="condition" type="string" value="else"/>
+		</edge>
+		<edge src="763b8038-7886-4d03-a49f-01a5de0cf6b5" tgt="899a16c8-3c82-4dd6-a8c8-2eeb0aabcc01">
+		</edge>
+		<edge src="899a16c8-3c82-4dd6-a8c8-2eeb0aabcc01" tgt="9531497c-75ba-4b21-906e-5f8b558b38c8">
+			<att name="condition" type="string" value="tell me more [about this] | interesting"/>
+		</edge>
+		<edge src="899a16c8-3c82-4dd6-a8c8-2eeb0aabcc01" tgt="a0863527-7666-4534-a1a9-d1efb0d1ea2f">
+			<att name="condition" type="string" value="_"/>
+		</edge>
+		<edge type="timeout" src="899a16c8-3c82-4dd6-a8c8-2eeb0aabcc01" tgt="a0863527-7666-4534-a1a9-d1efb0d1ea2f">
+			<att name="condition" type="string" value="Zeitüberschreitung nach int(1000 * tts_expectedDurationToSay(get(get(news, news_counter), &quot;headline&quot;)))+800ms"/>
+			<att name="timeout" type="string" value="int(1000 * tts_expectedDurationToSay(get(get(news, news_counter), &quot;headline&quot;)))+800"/>
+		</edge>
+		<edge src="8f1d1813-0e39-4dd8-9bd6-c1a04a7033b0" tgt="a9a41793-988d-494f-ac5f-a259bb7dfbc7">
+		</edge>
+		<edge src="9531497c-75ba-4b21-906e-5f8b558b38c8" tgt="a0863527-7666-4534-a1a9-d1efb0d1ea2f">
+		</edge>
+		<edge src="9fbe17f4-fdd8-4b50-8e2d-12bdb830984b" tgt="2167b4f9-80a2-4c2d-b707-bd87fd83300f">
+			<att name="condition" type="string" value="not at all | go on | yes please | please do"/>
+		</edge>
+		<edge src="9fbe17f4-fdd8-4b50-8e2d-12bdb830984b" tgt="40c5d14b-22e9-426d-af70-8b7d0f2add66">
+			<att name="condition" type="string" value="no | be quiet"/>
+		</edge>
+		<edge type="timeout" src="9fbe17f4-fdd8-4b50-8e2d-12bdb830984b" tgt="2167b4f9-80a2-4c2d-b707-bd87fd83300f">
+			<att name="condition" type="string" value="Zeitüberschreitung nach 1500ms"/>
+			<att name="timeout" type="string" value="1500"/>
+		</edge>
+		<edge src="a0863527-7666-4534-a1a9-d1efb0d1ea2f" tgt="5a03b1b8-3f17-4645-95ef-aa673ae88508">
+		</edge>
+		<edge src="a342e478-269b-4842-9312-c7e4a1e6333c" tgt="1262cb31-9188-454b-9de2-7c88fbe748d2">
+		</edge>
+		<edge src="a79487e5-e924-4963-ba76-427c725d0cb9" tgt="a7472631-ac51-4d1a-ae15-bf6c51865130">
+		</edge>
+		<edge src="a7e3e3a3-cfbe-49b3-af8c-64c14e2c1278" tgt="d3443f47-5663-4ccc-af0c-c3ef8807a4f6">
+		</edge>
+		<edge src="a9a41793-988d-494f-ac5f-a259bb7dfbc7" tgt="6b676d56-290e-46bf-a723-1f4628e5f4f2">
+		</edge>
+		<edge src="c2289f4e-9890-45c4-b284-16019a32e378" tgt="d7f4cf04-12d4-4e5e-a6a2-10cc4641c4d9">
+			<att name="condition" type="string" value="robot guide me to the cafeteria "/>
+		</edge>
+		<edge src="d3443f47-5663-4ccc-af0c-c3ef8807a4f6" tgt="c2289f4e-9890-45c4-b284-16019a32e378">
+		</edge>
+		<edge src="d492bd79-abf1-44d6-9130-a1372b402988" tgt="8f1d1813-0e39-4dd8-9bd6-c1a04a7033b0">
+		</edge>
+		<edge src="d7f4cf04-12d4-4e5e-a6a2-10cc4641c4d9" tgt="335fd3d3-9c28-406a-b937-07bf80e857c9">
+		</edge>
+	</graph>
+</wizard>
